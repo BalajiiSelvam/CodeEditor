@@ -2,28 +2,21 @@ A simple web-based code editor that lets users write C code and run it locally. 
 
 **1. Folder Structure**
 
-code-editor/
+<img width="247" height="252" alt="image" src="https://github.com/user-attachments/assets/579497ee-96a7-46be-8548-e722d6f229d2" />
 
-│-- server.js                    <-- Backend server (Node.js) handling code execution
-
-│-- package.json                 <-- Node.js dependencies and project metadata
-
-│-- package-lock.json            <-- Exact dependency versions
-
-│-- public/                      <-- Frontend assets
-
-    │-- index.html               <-- HTML page containing editor, dropdown, run button, output section
-    
-    │-- style.css                <-- Styles for editor and output section
-    
-    │-- script.js                <-- Frontend JS to handle button clicks, send code to backend, and display output
 
 **2. Role of each files**
-🗹 index.html                   | Provides the user interface : code editor textarea, language dropdown, run button, and output display.          
-🗹 style.css                    | Styles the editor and output section (fonts, colors, spacing).                                                     
+
+🗹 index.html                   | Provides the user interface : code editor textarea, language dropdown, run button, and output display.     
+
+🗹 style.css                    | Styles the editor and output section (fonts, colors, spacing).   
+
 🗹 script.js                    | Handles frontend logic : captures code from textarea, sends it via POST request to `/run`, and displays output. 
+
 🗹 server.js                    | Backend logic : receives code, saves it temporarily, compiles C code, executes it, sends stdout/stderr back.    
-🗹 package.json                 | Tracks dependencies (`express`, `body-parser`) and Node scripts.                                                   
+
+🗹 package.json                 | Tracks dependencies (`express`, `body-parser`) and Node scripts.      
+
 🗹 package-lock.json            | Ensures exact versions of dependencies.                                                                            
 
 **3. Workflow**
