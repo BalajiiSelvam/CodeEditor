@@ -19,24 +19,27 @@ A simple web-based code editor that lets users write C code and run it locally. 
 
 🗹 package-lock.json            | Ensures exact versions of dependencies.                                                                            
 
-**3. Workflow**
-**Step 1:** User opens the page
-    🗹 URL: http://localhost:3000
-    🗹 Browser loads index.html + style.css + script.js from /public.
+## 3. Workflow
 
-**Step 2:** User selects language & writes code
-    🗹 Frontend dropdown lets user select language (HTML, CSS, JS, C).
-    🗹 Currently only C works. Other options will show alert if selected.
-    🗹 User types code in <textarea id="code">.
+### Step 1: User Opens the Page
+- URL: `http://localhost:3000`
+- Browser loads `index.html`, `style.css`, and `script.js` from `/public`.
 
-**Step 3:** User clicks "Run"
-    🗹 script.js captures code and selected language.
-    🗹 Makes POST request to backend /run:
-      fetch('/run', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ code })
-      });
+### Step 2: User Selects Language & Writes Code
+- Frontend dropdown lets user select language (HTML, CSS, JS, C).
+- Currently only **C works**. Other options will show an alert if selected.
+- User types code in `<textarea id="code">`.
+
+### Step 3: User Clicks "Run"
+- `script.js` captures code and selected language.
+- Sends POST request to backend `/run`:
+
+```javascript
+fetch('/run', {
+  method: 'POST',
+  headers: {'Content-Type': 'application/json'},
+  body: JSON.stringify({ code })
+});
 
 **Step 4:** Backend receives code
     🗹 server.js receives POST request with { code: "user code here" }.
@@ -63,3 +66,22 @@ A simple web-based code editor that lets users write C code and run it locally. 
 **Note :**
 1. GCC must be installed locally (gcc --version). Execution happens on your laptop, not any external API.
 2. Running arbitrary C code can potentially crash or harm your machine. Current code does not sandbox, but uses 3-second timeout.
+
+
+---
+
+## 2. Role of Each File
+
+| File Name          | Role / Description                                                                 |
+|-------------------|----------------------------------------------------------------------------------|
+| index.html         | Provides the user interface: code editor textarea, language dropdown, run button, and output display. |
+| style.css          | Styles the editor and output section (fonts, colors, spacing).                  |
+| script.js          | Handles frontend logic: captures code from textarea, sends it via POST request to `/run`, and displays output. |
+| server.js          | Backend logic: receives code, saves it temporarily, compiles C code, executes it, and sends stdout/stderr back. |
+| package.json       | Tracks dependencies (`express`, `body-parser`) and Node scripts.                 |
+| package-lock.json  | Ensures exact versions of dependencies.                                          |
+
+---
+
+
+
