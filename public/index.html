@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Code Editor</title>
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
 </head>
 <body>
 <h2>Simple Code Editor</h2>
@@ -18,9 +19,14 @@
 <textarea id="code" rows="15" cols="80" placeholder="Write your code here..."></textarea>
 <br>
 <button id="runBtn">Run</button>
+<h3>Input:</h3>
+<textarea id="input" rows="5" cols="80" placeholder="Enter input for program"></textarea>
 <h3>Output:</h3>
 <pre id="output"></pre>
 
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/clike/clike.min.js"></script>
 <script src="script.js"></script>
 </body>
 </html>
