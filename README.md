@@ -1,13 +1,21 @@
 A simple web-based code editor that lets users write C code and run it locally. The frontend provides a textarea, language dropdown, run button, and output display. The backend saves the code temporarily, compiles and executes it using the local GCC compiler, and returns the output to the frontend.
 
 **1. Folder Structure**
+
 code-editor/
+
 │-- server.js                    <-- Backend server (Node.js) handling code execution
+
 │-- package.json                 <-- Node.js dependencies and project metadata
+
 │-- package-lock.json            <-- Exact dependency versions
+
 │-- public/                      <-- Frontend assets
+
     │-- index.html               <-- HTML page containing editor, dropdown, run button, output section
+    
     │-- style.css                <-- Styles for editor and output section
+    
     │-- script.js                <-- Frontend JS to handle button clicks, send code to backend, and display output
 
 **2. Role of each files**
