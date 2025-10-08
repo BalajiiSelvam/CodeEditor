@@ -66,7 +66,7 @@ app.post('/run', (req, res) => {
     fs.writeFileSync(tempFile, code);
 
     // Compile the C code
-    exec(`gcc ${tempFile} -o ${outputBinary}`, (err, stdout, stderr) => {
+    exec(`gcc ${tempFile} -o ${outputBinary}`,{ timeout: 3000 }, (err, stdout, stderr) => {
         if (err) {
             // Compilation error
             return res.json({ output: stderr });
