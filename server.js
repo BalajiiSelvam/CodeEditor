@@ -69,7 +69,7 @@ app.post('/run', (req, res) => {
     exec(`gcc ${tempFile} -o ${outputBinary}`,{ timeout: 3000 }, (err, stdout, stderr) => {
         if (err) {
             // Compilation error
-            return res.json({ output: stderr });
+            return res.json({ output: stderr  || 'Error during execution' });
         }
 
         // Run the compiled binary
