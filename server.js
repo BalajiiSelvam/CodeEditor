@@ -109,22 +109,40 @@
 
 // --------------------------------------------------------------------------------------------------
 // VERSION - 3
+// server.js
 
+const express = require('express');
+const bodyParser = require('body-parser');
+const fs = require('fs');
+const { exec, spawn } = require('child_process');
+const path = require('path');
+
+const app = express();
+const PORT = 3000;
+
+// Middleware
+app.use(bodyParser.json());
+app.use(express.static('public'));
+
+// POST route to run C code
 app.post('/run', (req, res) => {
-    const code = req.body.code;
+    const code = req.body.code; // Code from frontend
     const input = typeof req.body.input === 'string' ? req.body.input : '';
-    const fs = require('fs');
-    const { exec, spawn } = require('child_process');
-    const path = require('path');
+
+    console.log('Received code:', code);
+    console.log('Received input:', input);
 
     const tempFile = 'temp.c';
     const outputBinary = 'temp.out';
 
+    // Write code to temp file
     fs.writeFileSync(tempFile, code);
 
+    // Compile the C code
     exec(`gcc ${tempFile} -o ${outputBinary}`, { timeout: 3000 }, (err, stdout, stderr) => {
         if (err) {
-            return res.json({ output: stderr || 'Compilation error' });
+            // Compilation error
+            return res.json({ output: stderr || 'Error during compilation' });
         }
 
         const binaryPath = path.join(__dirname, outputBinary);
@@ -133,23 +151,32 @@ app.post('/run', (req, res) => {
         let outputData = '';
         let killed = false;
 
-        // Kill after 2 seconds to prevent infinite loop
+        // ⏱️ Kill process if it runs too long (to stop infinite loops)
         const timeout = setTimeout(() => {
             process.kill();
             killed = true;
-        }, 2000);
+        }, 2000); // 2 seconds timeout
 
-        process.stdout.on('data', data => outputData += data);
-        process.stderr.on('data', data => outputData += data);
+        // Capture normal output
+        process.stdout.on('data', data => {
+            outputData += data;
+        });
 
+        // Capture runtime errors
+        process.stderr.on('data', data => {
+            outputData += data;
+        });
+
+        // When process finishes
         process.on('close', () => {
             clearTimeout(timeout);
             if (killed) {
                 outputData += '\n[Error: Program timed out — possible infinite loop]';
             }
-            res.json({ output: outputData || '[No output]' });
+            res.json({ output: outputData || '[No output produced]' });
         });
 
+        // Handle user input
         if (input) {
             const lines = input.split('\n');
             lines.forEach(line => process.stdin.write(line + '\n'));
@@ -157,3 +184,6 @@ app.post('/run', (req, res) => {
         process.stdin.end();
     });
 });
+
+// Start server
+app.listen(PORT, () => console.log(`✅ Server running on http://localhost:${PORT}`));
