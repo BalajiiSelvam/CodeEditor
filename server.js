@@ -1,3 +1,5 @@
+// VERSION -1 
+
 // const express = require('express');
 // const bodyParser = require('body-parser');
 // const fs = require('fs');
@@ -36,71 +38,122 @@
 // app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
 
 // ------------------------------------------------------------------------------------------
+// VERSION - 2
 
-const express = require('express');
-const bodyParser = require('body-parser');
-const fs = require('fs');
-const { exec, spawn } = require('child_process'); // Added spawn for input support
+// const express = require('express');
+// const bodyParser = require('body-parser');
+// const fs = require('fs');
+// const { exec, spawn } = require('child_process'); // Added spawn for input support
 
-const app = express();
-const PORT = 3000;
+// const app = express();
+// const PORT = 3000;
 
-// Middleware
-app.use(bodyParser.json());
-app.use(express.static('public'));
+// // Middleware
+// app.use(bodyParser.json());
+// app.use(express.static('public'));
 
-// POST route to run C code
+// // POST route to run C code
+// app.post('/run', (req, res) => {
+//     const code = req.body.code;           // Code from frontend
+//     // const input = req.body.input || '';   // Optional input from frontend
+//     const input = typeof req.body.input === 'string' ? req.body.input : '';
+
+//     //See what front-end send
+//     console.log('Received code:', code);
+//     console.log('Received input:', input);
+
+//     const tempFile = 'temp.c';            // Temporary C source file
+//     const outputBinary = 'temp.out';      // Compiled binary
+
+//     // Write code to temporary file
+//     fs.writeFileSync(tempFile, code);
+
+//     // Compile the C code
+//     exec(`gcc ${tempFile} -o ${outputBinary}`,{ timeout: 3000 }, (err, stdout, stderr) => {
+//         if (err) {
+//             // Compilation error
+//             return res.json({ output: stderr  || 'Error during execution' });
+//         }
+
+//         // Run the compiled binary
+//         // const process = spawn(`./${outputBinary}`);
+//         const path = require('path');
+//         const binaryPath = path.join(__dirname, 'temp.out');
+//         // const process = spawn(binaryPath);
+//         const process = spawn(binaryPath);
+
+//         let outputData = '';
+
+//         // Capture stdout
+//         process.stdout.on('data', data => outputData += data);
+
+//         // Capture stderr (runtime errors)
+//         process.stderr.on('data', data => outputData += data);
+
+//         // When process finishes, send output back
+//         process.on('close', () => res.json({ output: outputData }));
+
+//         // Send user input to program
+//         // process.stdin.write(input);
+//         // process.stdin.end();
+//          if (input) {
+//             const lines = input.split('\n');
+//             lines.forEach(line => process.stdin.write(line + '\n'));
+//         }
+//         process.stdin.end();
+//     });
+// });
+
+// // Start server
+// app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+
+// --------------------------------------------------------------------------------------------------
+// VERSION - 3
+
 app.post('/run', (req, res) => {
-    const code = req.body.code;           // Code from frontend
-    // const input = req.body.input || '';   // Optional input from frontend
+    const code = req.body.code;
     const input = typeof req.body.input === 'string' ? req.body.input : '';
+    const fs = require('fs');
+    const { exec, spawn } = require('child_process');
+    const path = require('path');
 
-    //See what front-end send
-    console.log('Received code:', code);
-    console.log('Received input:', input);
+    const tempFile = 'temp.c';
+    const outputBinary = 'temp.out';
 
-    const tempFile = 'temp.c';            // Temporary C source file
-    const outputBinary = 'temp.out';      // Compiled binary
-
-    // Write code to temporary file
     fs.writeFileSync(tempFile, code);
 
-    // Compile the C code
-    exec(`gcc ${tempFile} -o ${outputBinary}`,{ timeout: 3000 }, (err, stdout, stderr) => {
+    exec(`gcc ${tempFile} -o ${outputBinary}`, { timeout: 3000 }, (err, stdout, stderr) => {
         if (err) {
-            // Compilation error
-            return res.json({ output: stderr  || 'Error during execution' });
+            return res.json({ output: stderr || 'Compilation error' });
         }
 
-        // Run the compiled binary
-        // const process = spawn(`./${outputBinary}`);
-        const path = require('path');
-        const binaryPath = path.join(__dirname, 'temp.out');
-        // const process = spawn(binaryPath);
+        const binaryPath = path.join(__dirname, outputBinary);
         const process = spawn(binaryPath);
 
         let outputData = '';
+        let killed = false;
 
-        // Capture stdout
+        // Kill after 2 seconds to prevent infinite loop
+        const timeout = setTimeout(() => {
+            process.kill();
+            killed = true;
+        }, 2000);
+
         process.stdout.on('data', data => outputData += data);
-
-        // Capture stderr (runtime errors)
         process.stderr.on('data', data => outputData += data);
 
-        // When process finishes, send output back
-        process.on('close', () => res.json({ output: outputData }));
+        process.on('close', () => {
+            clearTimeout(timeout);
+            if (killed) {
+                outputData += '\n[Error: Program timed out — possible infinite loop]';
+            }
+            res.json({ output: outputData || '[No output]' });
+        });
 
-        // Send user input to program
-        // process.stdin.write(input);
-        // process.stdin.end();
-         if (input) {
+        if (input) {
             const lines = input.split('\n');
             lines.forEach(line => process.stdin.write(line + '\n'));
         }
         process.stdin.end();
     });
 });
-
-// Start server
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
-
