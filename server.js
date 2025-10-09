@@ -15,6 +15,14 @@ app.use(express.static('public'));
 app.post('/run', (req, res) => {
     const code = req.body.code;
     const lang = req.body.lang; // 'c' or 'java'
+    const input = req.body.input || '';
+
+    console.log('====================');
+    console.log('Language:', lang);
+    console.log('User Input:\n', input);
+    console.log('Code:\n', code);
+    console.log('====================');
+
 
     if (lang === 'c') {
         const tempFile = 'temp.c';
