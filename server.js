@@ -1,14 +1,13 @@
-<<<<<<< HEAD
+
 // VERSION -1 
 
-=======
->>>>>>> tempBranch
+
 // const express = require('express');
 // const bodyParser = require('body-parser');
 // const fs = require('fs');
 // const { exec } = require('child_process');
 // const path = require('path');
-<<<<<<< HEAD
+
 
 // const app = express();
 // const PORT = 3000;
@@ -120,13 +119,12 @@ const bodyParser = require('body-parser');
 const fs = require('fs');
 const { exec, spawn } = require('child_process');
 const path = require('path');
-=======
->>>>>>> tempBranch
+
 
 // const app = express();
 // const PORT = 3000;
 
-<<<<<<< HEAD
+
 // Middleware
 app.use(bodyParser.json());
 app.use(express.static('public'));
@@ -194,7 +192,7 @@ app.post('/run', (req, res) => {
 
 // Start server
 app.listen(PORT, () => console.log(`✅ Server running on http://localhost:${PORT}`));
-=======
+
 // app.use(bodyParser.json());
 // app.use(express.static('public'));
 
@@ -264,4 +262,3 @@ app.post('/run', (req, res) => {
         res.json({ output: 'Only C and Java are supported.' });
     }
 });
->>>>>>> tempBranch

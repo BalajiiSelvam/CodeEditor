@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 // Initialize CodeMirror for C code
 const editor = CodeMirror.fromTextArea(document.getElementById('code'), {
     lineNumbers: true,
@@ -8,12 +8,12 @@ const editor = CodeMirror.fromTextArea(document.getElementById('code'), {
     indentUnit: 4
 });
 
-=======
+
 // 
 //----------------------------------------------------------------------------------
 
 // VERSION - 2
->>>>>>> tempBranch
+
 document.getElementById('runBtn').addEventListener('click', async () => {
     // const code = document.getElementById('code').value;
     const code = editor.getValue();  // get code from CodeMirror instead of textarea
@@ -33,11 +33,10 @@ document.getElementById('runBtn').addEventListener('click', async () => {
     const res = await fetch('/run', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-<<<<<<< HEAD
-        body: JSON.stringify({ code, input })  // send input
-=======
+
+        // body: JSON.stringify({ code, input })  // send input
         body: JSON.stringify({ code, lang })
->>>>>>> tempBranch
+
     });
 
     const data = await res.json();
