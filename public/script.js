@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // Initialize CodeMirror for C code
 const editor = CodeMirror.fromTextArea(document.getElementById('code'), {
     lineNumbers: true,
@@ -7,14 +8,20 @@ const editor = CodeMirror.fromTextArea(document.getElementById('code'), {
     indentUnit: 4
 });
 
+=======
+// 
+//----------------------------------------------------------------------------------
+
+// VERSION - 2
+>>>>>>> tempBranch
 document.getElementById('runBtn').addEventListener('click', async () => {
     // const code = document.getElementById('code').value;
     const code = editor.getValue();  // get code from CodeMirror instead of textarea
     const input = document.getElementById('input').value;
     const lang = document.getElementById('language').value;
-    
-    if (lang !== 'c') {
-        alert('Only C code execution is supported now.');
+
+    if (!['c', 'java'].includes(lang)) {
+        alert('Only C and Java code execution is supported.');
         return;
     }
 
@@ -26,8 +33,13 @@ document.getElementById('runBtn').addEventListener('click', async () => {
     const res = await fetch('/run', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+<<<<<<< HEAD
         body: JSON.stringify({ code, input })  // send input
+=======
+        body: JSON.stringify({ code, lang })
+>>>>>>> tempBranch
     });
+
     const data = await res.json();
     document.getElementById('output').textContent = data.output;
 });
